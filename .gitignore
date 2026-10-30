@@ -3,6 +3,7 @@ node_modules/
 
 # 工具与本地数据
 .workbuddy/
+.wbapp_*.genie
 *.log
 
 # 系统文件
