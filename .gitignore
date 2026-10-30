@@ -1,0 +1,11 @@
+# 依赖
+node_modules/
+
+# 工具与本地数据
+.workbuddy/
+*.log
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini

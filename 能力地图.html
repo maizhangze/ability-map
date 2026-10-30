@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>能力地图 · 18 岁大学生全面发展能力评估</title>
+<style>
+  :root{
+    --bg:#f4f6f9;
+    --panel:#ffffff;
+    --ink:#14181f;
+    --ink2:#3c4450;
+    --muted:#79818f;
+    --line:#e5e8ee;
+    --line2:#eff1f5;
+    --accent:#2f6bff;
+    --accent-soft:#eef3ff;
+    --r:14px;
+    --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 26px -14px rgba(16,24,40,.16);
+    --cA:#f59e0b; --cB:#2f6bff; --cC:#7c3aed; --cD:#db2777; --cE:#0d9488; --cF:#059669;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 500px at 8% -10%, #e9efff 0%, rgba(233,239,255,0) 60%),
+      radial-gradient(900px 400px at 100% 0%, #eafaf3 0%, rgba(234,250,243,0) 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    font-size:15px;
+    line-height:1.6;
+  }
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:60;
+    height:62px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:0 18px;
+    background:rgba(255,255,255,.86);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .tb-left{display:flex;align-items:center;gap:12px;min-width:0}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;letter-spacing:.3px;white-space:nowrap}
+  .brand .dot{width:9px;height:9px;border-radius:3px;background:linear-gradient(135deg,#2f6bff,#12b981);box-shadow:0 0 0 4px rgba(47,107,255,.12)}
+  .tb-sub{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tb-right{display:flex;align-items:center;gap:10px}
+  .progress-mini{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);white-space:nowrap}
+  .progress-mini .track{width:96px;height:6px;border-radius:99px;background:#e8ecf3;overflow:hidden}
+  .progress-mini .track i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#2f6bff,#12b981);transition:width .35s ease}
+  .tabs{display:flex;gap:2px;background:#eef1f6;padding:3px;border-radius:11px}
+  .tabs button{padding:6px 13px;font-size:13px;border-radius:9px;color:#5b6472;white-space:nowrap}
+  .tabs button.active{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(16,24,40,.12)}
+  .ghost{padding:7px 12px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:#fff;color:var(--ink2)}
+  .ghost:hover{border-color:#c9d2e2;background:#fbfcfe}
+  .menu-wrap{position:relative}
+  .menu{
+    position:absolute;right:0;top:calc(100% + 8px);width:214px;padding:6px;
+    background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 40px -18px rgba(16,24,40,.35);
+    display:flex;flex-direction:column;gap:1px;
+  }
+  .menu button{text-align:left;padding:8px 10px;border-radius:8px;font-size:13.5px;color:var(--ink2)}
+  .menu button:hover{background:#f5f7fb}
+  .menu button.danger{color:#d92d20}
+  .menu button.danger:hover{background:#fff2f0}
+  .only-mobile{display:none}
+
+  /* ---------- layout ---------- */
+  .layout{display:grid;grid-template-columns:252px minmax(0,1fr);gap:0;align-items:start}
+  .sidebar{
+    position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto;
+    padding:18px 12px 40px 18px;border-right:1px solid var(--line);
+  }
+  .sidebar::-webkit-scrollbar{width:8px}
+  .sidebar::-webkit-scrollbar-thumb{background:#dde2ec;border-radius:9px}
+  .side-title{font-size:11px;letter-spacing:1.2px;color:#98a0ae;font-weight:700;margin:14px 8px 8px;text-transform:uppercase}
+  .side-item{
+    display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:9px;
+    font-size:13px;color:#4b5462;text-decoration:none;line-height:1.35;
+  }
+  .side-item:hover{background:#fff;color:var(--ink)}
+  .side-item .n{
+    flex:0 0 auto;width:20px;height:20px;border-radius:6px;display:grid;place-items:center;
+    font-size:11px;font-weight:700;color:#fff;background:var(--c);
+  }
+  .side-item .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .side-item .cnt{font-size:10.5px;color:#a6aebb;font-variant-numeric:tabular-nums}
+  .side-item.done .cnt{color:#0f9f6e;font-weight:600}
+  main{padding:22px 26px 90px;max-width:1060px;margin:0 auto;width:100%}
+
+  /* ---------- intro / legend ---------- */
+  .intro{
+    background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:18px 20px;margin-bottom:18px;
+  }
+  .intro h1{margin:0 0 6px;font-size:19px;letter-spacing:-.2px}
+  .intro p{margin:0;color:var(--muted);font-size:13.5px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .lg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2);background:#f7f9fc;border:1px solid var(--line2);border-radius:8px;padding:5px 9px}
+  .lg b{font-weight:700}
+  .sw{width:9px;height:9px;border-radius:3px}
+
+  /* ---------- dimension card ---------- */
+  .dim{
+    background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    margin-bottom:16px;scroll-margin-top:80px;
+  }
+  .dim-head{padding:14px 18px 12px;border-bottom:1px solid var(--line2);background:#fff;border-radius:16px 16px 0 0}
+  .dh-top{display:flex;align-items:flex-start;gap:12px}
+  .dnum{
+    flex:0 0 auto;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    color:#fff;font-weight:700;font-size:15px;background:var(--c);
+    box-shadow:0 4px 12px -4px color-mix(in srgb, var(--c) 60%, transparent);
+  }
+  .dh-title{flex:1;min-width:0}
+  .dh-title h2{margin:1px 0 3px;font-size:15.5px;letter-spacing:-.1px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .goal{margin:0;color:var(--muted);font-size:12.5px;line-height:1.55}
+  .dh-stat{flex:0 0 auto;text-align:right;min-width:76px}
+  .dh-stat b{display:block;font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+  .dh-stat span{font-size:11px;color:var(--muted)}
+  .dh-ctrl{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:11px}
+  .ctrl-group{display:flex;align-items:center;gap:7px}
+  .ctrl-group>label{font-size:11.5px;color:#8b93a1;white-space:nowrap}
+  .seg{display:flex;gap:3px;background:#f2f4f8;padding:3px;border-radius:9px}
+  .seg button{width:26px;height:24px;border-radius:7px;font-size:12px;color:#6a7280;display:grid;place-items:center;transition:.12s}
+  .seg button:hover{background:#e7ebf3;color:#39414e}
+  .seg button.on{background:var(--accent);color:#fff;font-weight:700;box-shadow:0 2px 6px -2px rgba(47,107,255,.6)}
+  .seg.trend button{width:30px}
+  .seg.trend button.on{background:#111827;box-shadow:none}
+  .info{
+    width:17px;height:17px;border-radius:50%;border:1px solid #dfe4ee;background:#fff;
+    color:#98a0ae;font-size:10px;line-height:1;display:grid;place-items:center;font-weight:700;
+    flex:0 0 auto;
+  }
+  .info:hover{border-color:#9bb6f7;color:#2f6bff;background:#f5f8ff}
+  .prog{margin-left:auto;font-size:11.5px;color:#8b93a1;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .prog b{color:#0f9f6e}
+  .badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:600;letter-spacing:.2px}
+  .b-s1{background:#fff1f1;color:#d92d20}
+  .b-s2{background:#eef3ff;color:#1f57e0}
+  .b-s3{background:#e9faf1;color:#0b8f5e}
+  .b-s4{background:#f3f4f6;color:#6b7280}
+  .b-none{background:#f5f6f9;color:#98a0ae;font-weight:500}
+
+  .sub-label{
+    padding:9px 18px 3px;font-size:11px;font-weight:700;letter-spacing:.6px;color:#98a0ae;
+    background:#fbfcfe;border-top:1px solid var(--line2);
+  }
+  .item{
+    display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:start;
+    padding:10px 18px;border-top:1px solid var(--line2);
+  }
+  .dim-head + .item,
+  .sub-label + .item{border-top:none}
+  .item:hover{background:#fcfdff}
+  .item-main{min-width:0}
+  .item-name{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .code{font-size:11px;color:#a2aab8;font-variant-numeric:tabular-nums;letter-spacing:.3px}
+  .name{font-size:14px;font-weight:600;color:#20262f}
+  .desc{margin:2px 0 0;font-size:12.5px;color:#7f8794;line-height:1.62}
+  .rate{display:flex;align-items:center;gap:4px;padding-top:1px}
+  .chip{
+    width:30px;height:30px;border-radius:8px;border:1px solid var(--line);
+    background:#fff;font-size:13px;color:#6a7280;font-variant-numeric:tabular-nums;
+    transition:.12s;font-weight:500;
+  }
+  .chip:hover{border-color:#b9c6e2;background:#f7f9ff;color:#2f6bff}
+  .chip.nv{width:auto;padding:0 8px;font-size:11.5px;color:#98a0ae;border-style:dashed}
+  .chip.on{color:#fff;border-color:transparent;font-weight:700}
+  .chip.on[data-v="1"]{background:#ef4444}
+  .chip.on[data-v="2"]{background:#f97316}
+  .chip.on[data-v="3"]{background:#eab308}
+  .chip.on[data-v="4"]{background:#22c55e}
+  .chip.on[data-v="5"]{background:#059669}
+  .chip.nv.on{background:#eef1f6;color:#5b6472;border:1px solid #cfd6e2;border-style:solid;font-weight:600}
+
+  .extras .item{padding:11px 18px}
+
+  /* ---------- profile ---------- */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+  .stat .k{font-size:11.5px;color:var(--muted)}
+  .stat .v{font-size:24px;font-weight:700;letter-spacing:-.6px;margin-top:2px;font-variant-numeric:tabular-nums}
+  .stat .v small{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:16px}
+  .card h3{margin:0 0 4px;font-size:15px}
+  .card .hint{margin:0 0 14px;font-size:12.5px;color:var(--muted)}
+  .tbl-scroll{overflow-x:auto;margin:0 -6px}
+  table.tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
+  table.tbl th{
+    text-align:left;font-size:11px;font-weight:600;color:#98a0ae;letter-spacing:.4px;
+    padding:0 10px 8px;white-space:nowrap;border-bottom:1px solid var(--line);
+  }
+  table.tbl td{padding:9px 10px;border-bottom:1px solid var(--line2);vertical-align:middle}
+  table.tbl tr:last-child td{border-bottom:none}
+  table.tbl tr:hover td{background:#fafcff}
+  .td-name{font-weight:600;font-size:13px;white-space:nowrap}
+  .td-num{font-variant-numeric:tabular-nums;color:#6a7280;white-space:nowrap}
+  .bar{position:relative;height:7px;border-radius:99px;background:#eef1f6;overflow:hidden;min-width:64px;flex:1}
+  .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,#4b8bff,#2f6bff)}
+  .bar.warm i{background:linear-gradient(90deg,#ffb020,#f97316)}
+  .bar-cell{display:flex;align-items:center;gap:8px;min-width:132px}
+  .bar-cell span{font-size:12px;font-variant-numeric:tabular-nums;color:#4b5462;width:26px;text-align:right}
+  .trend{font-size:15px;line-height:1;width:22px;text-align:center}
+  .t-up{color:#0f9f6e}.t-flat{color:#98a0ae}.t-down{color:#e0453a}
+
+  /* ---------- quadrants ---------- */
+  .axis-note{display:flex;justify-content:space-between;font-size:11.5px;color:#98a0ae;margin-bottom:8px}
+  .quad-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .quad{border-radius:14px;padding:13px 15px;border:1px solid;min-height:130px}
+  .quad h4{margin:0 0 2px;font-size:13.5px;display:flex;align-items:center;gap:7px}
+  .quad .q-sub{font-size:11.5px;opacity:.75;margin:0 0 9px}
+  .quad .chips{display:flex;flex-wrap:wrap;gap:5px}
+  .qchip{font-size:11.5px;background:rgba(255,255,255,.8);border-radius:7px;padding:3px 7px;color:#3c4450;border:1px solid rgba(0,0,0,.05);white-space:nowrap}
+  .quad .empty{font-size:11.5px;opacity:.6}
+  .q1{background:#fff5f4;border-color:#fbd5d1;color:#a52a1e}
+  .q2{background:#f2f6ff;border-color:#d5e2ff;color:#1f4dbf}
+  .q3{background:#f7f8fa;border-color:#e4e8ef;color:#5b6472}
+  .q4{background:#f1fbf5;border-color:#cdeeda;color:#0b7a50}
+
+  /* ---------- forms ---------- */
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .field>label{font-size:12.5px;color:#5b6472;font-weight:600}
+  .field>label .opt{font-weight:400;color:#a2aab8}
+  input[type=text],textarea,select{
+    width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fcfdff;
+    outline:none;transition:.15s;line-height:1.6;
+  }
+  input[type=text]:focus,textarea:focus,select:focus{border-color:#9bb6f7;background:#fff;box-shadow:0 0 0 3px rgba(47,107,255,.12)}
+  textarea{resize:vertical;min-height:64px}
+  .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .btn{
+    display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;
+    background:var(--accent);color:#fff;font-size:13px;font-weight:600;
+    box-shadow:0 6px 16px -8px rgba(47,107,255,.9);
+  }
+  .btn:hover{filter:brightness(1.05)}
+  .btn.lite{background:#f1f4fa;color:#3c4450;box-shadow:none;border:1px solid var(--line)}
+  .btn.lite:hover{background:#e9eefa}
+  .plan-row{
+    display:grid;grid-template-columns:150px minmax(0,1fr) 190px;gap:12px;align-items:start;
+    padding:14px 0;border-top:1px solid var(--line2);
+  }
+  .plan-row:first-of-type{border-top:none}
+  .plan-type{font-size:13px;font-weight:700;color:#20262f}
+  .plan-type small{display:block;font-weight:400;color:#98a0ae;font-size:11.5px;margin-top:2px;line-height:1.5}
+
+  .footer-note{margin-top:22px;font-size:12px;color:#a2aab8;text-align:center;line-height:1.8}
+
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
+    background:#14181f;color:#fff;font-size:13px;padding:10px 16px;border-radius:11px;
+    opacity:0;pointer-events:none;transition:.25s;z-index:200;box-shadow:0 14px 30px -12px rgba(0,0,0,.5);
+    max-width:min(560px,86vw);line-height:1.6;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+
+  @media (max-width:960px){
+    .layout{grid-template-columns:1fr}
+    .sidebar{
+      position:fixed;left:0;top:62px;bottom:0;width:266px;background:#fff;z-index:55;
+      border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .22s ease;
+      box-shadow:20px 0 40px -30px rgba(0,0,0,.5);
+    }
+    .sidebar.open{transform:none}
+    .only-mobile{display:inline-flex}
+    main{padding:16px 14px 80px;max-width:100%}
+    .tb-sub{display:none}
+    .progress-mini{display:none}
+    .tabs button{padding:6px 9px;font-size:12px}
+    .item{grid-template-columns:minmax(0,1fr);gap:8px}
+    .rate{justify-content:flex-start}
+    .quad-grid{grid-template-columns:1fr}
+    .plan-row{grid-template-columns:1fr;gap:8px}
+    .row3{grid-template-columns:1fr}
+    .dh-stat{min-width:60px}
+    .dh-stat b{font-size:19px}
+  }
+  @media (max-width:700px){
+    .brand{display:none}
+    .tabs{overflow-x:auto;max-width:calc(100vw - 130px)}
+    .topbar{padding:0 10px;gap:8px}
+  }
+  @media print{
+    .topbar,.sidebar,.menu,.no-print{display:none!important}
+    .layout{display:block}
+    main{padding:0;max-width:100%}
+    body{background:#fff;font-size:12px}
+    .dim,.card,.intro,.stat{box-shadow:none;break-inside:avoid}
+    .chip{border:1px solid #ddd!important;color:#333!important;background:#fff!important}
+    .chip.on{outline:2px solid #333;outline-offset:-2px}
+    .chip.on::after{content:""}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tb-left">
+    <button class="ghost only-mobile" id="btnMenu">目录</button>
+    <div class="brand"><span class="dot"></span>能力地图</div>
+    <span class="tb-sub">18 岁大学生 · 17 维度 · 209 项子能力 · 自动保存</span>
+  </div>
+  <div class="tb-right">
+    <div class="progress-mini">
+      <div class="track"><i id="topProgress"></i></div>
+      <span id="topProgressText">0%</span>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-view="assess" class="active">评估</button>
+      <button data-view="profile">总表</button>
+      <button data-view="priority">优先级</button>
+      <button data-view="summary">总结</button>
+      <button data-view="plan">8 周计划</button>
+    </nav>
+    <div class="menu-wrap">
+      <button class="ghost" id="btnData">数据</button>
+      <div class="menu" id="menuData" hidden>
+        <button id="btnExportJSON">导出 JSON（含能力名称）</button>
+        <button id="btnExportJSONNoCode">导出 JSON（不含编号）</button>
+        <button id="btnCopyText">复制文本报告（发给 AI）</button>
+        <button id="btnExportCSV">导出 CSV 表格</button>
+        <button id="btnImport">导入 JSON 备份</button>
+        <button id="btnPrint">打印 / 另存 PDF</button>
+        <button id="btnReset" class="danger">清空全部结果</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="side-title">评估维度</div>
+    <div id="sideNav"></div>
+  </aside>
+
+  <main>
+    <!-- ================= 评估 ================= -->
+    <section class="view" id="view-assess">
+      <div class="intro">
+        <h1>能力自我评估</h1>
+        <p>每项子能力独立打分；没有真正经历过的事，不要直接给自己 5 分 —— 可以标记为「未验证」，之后用实际经历检验。所有选择会自动保存在本机浏览器里。<br />
+        17 个维度的「重要程度 I」已经按 18 岁大学生的常见情况预填了推荐值，点数字后面的 <b>?</b> 可以看理由；如果你的情况不同，直接改就行。</p>
+        <div class="legend">
+          <div class="lg"><span class="sw" style="background:#ef4444"></span><b>1</b> 几乎不具备</div>
+          <div class="lg"><span class="sw" style="background:#f97316"></span><b>2</b> 能理解，执行困难</div>
+          <div class="lg"><span class="sw" style="background:#eab308"></span><b>3</b> 基本具备</div>
+          <div class="lg"><span class="sw" style="background:#22c55e"></span><b>4</b> 熟练掌握</div>
+          <div class="lg"><span class="sw" style="background:#059669"></span><b>5</b> 明显突出</div>
+          <div class="lg"><b>I</b> 重要程度 1–5（看未来 1–3 年）</div>
+          <div class="lg"><b>↑ → ↓</b> 近半年趋势</div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn lite" id="btnResume">继续评分 · 跳到第一个未完成的维度</button>
+          <button class="btn lite" id="btnResetI">重要程度 · 恢复推荐值</button>
+        </div>
+      </div>
+      <div id="dims"></div>
+
+      <div class="card extras" id="extraCard">
+        <h3>补充检查：容易被忽略的能力</h3>
+        <p class="hint">不属于某单一维度，但在特定场景下很关键。主要用于发现主表没有体现的特殊优势或能力缺口，不要求每项都强。</p>
+        <div id="extras"></div>
+      </div>
+    </section>
+
+    <!-- ================= 总表 ================= -->
+    <section class="view" id="view-profile" hidden>
+      <div class="stats" id="profileStats"></div>
+      <div class="card">
+        <h3>17 维度总表</h3>
+        <p class="hint">均分 P 只统计已评分的子能力（不含「未验证」）。重要程度 I 已预填推荐值，可随时在评估页调整。点击表头可排序。</p>
+        <div class="tbl-scroll">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th style="width:34%">一级维度</th>
+                <th data-sort="total">子能力</th>
+                <th data-sort="rated">已评</th>
+                <th data-sort="avg">当前均分 P</th>
+                <th data-sort="i">重要程度 I</th>
+                <th data-sort="trend">趋势</th>
+                <th data-sort="gap">策略</th>
+              </tr>
+            </thead>
+            <tbody id="profileBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>最需要关注的子能力（按「重要度 − 能力」排序）</h3>
+        <p class="hint">只列出重要程度 ≥ 4 的一级维度里，评分 ≤ 3 的具体能力。这些是最值得先动手的地方。</p>
+        <div id="gapList"></div>
+      </div>
+    </section>
+
+    <!-- ================= 优先级 ================= -->
+    <section class="view" id="view-priority" hidden>
+      <div class="card">
+        <h3>P × I 优先级矩阵</h3>
+        <p class="hint">不要单纯按能力分数排名，要结合重要程度。横轴为当前均分 P，纵轴为重要程度 I。</p>
+        <div class="axis-note"><span>← 当前能力低</span><span>当前能力高 →</span></div>
+        <div class="quad-grid">
+          <div class="quad q1"><h4>优先补足</h4><p class="q-sub">P 1–2 × I 4–5 · 重要短板，优先投入时间</p><div class="chips" id="q1"></div></div>
+          <div class="quad q2"><h4>重点利用</h4><p class="q-sub">P 4–5 × I 4–5 · 把优势用到更多场景，形成竞争力</p><div class="chips" id="q2"></div></div>
+          <div class="quad q3"><h4>暂缓提升</h4><p class="q-sub">P 1–2 × I 1–3 · 维持基本水平即可</p><div class="chips" id="q3"></div></div>
+          <div class="quad q4"><h4>保持优势</h4><p class="q-sub">P 4–5 × I 1–3 · 不必过度投入，保留为个人特色</p><div class="chips" id="q4"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>中间地带（P ≈ 3）</h3>
+        <p class="hint">P=3 且 I=5 最值得提升，可能是未来发展的瓶颈；P=3 且 I=4 可作为第二梯队目标。</p>
+        <div id="midList"></div>
+      </div>
+      <div class="card">
+        <h3>建议的发展结构</h3>
+        <p class="hint">不追求每项都是 5 分。对 18 岁的大学生，更现实的结构是：</p>
+        <div style="display:grid;gap:10px">
+          <div style="display:flex;gap:10px;align-items:flex-start"><span class="badge b-s3" style="flex:0 0 auto">基础能力</span><span style="font-size:13px;color:#4b5462">身体健康、情绪管理、学习能力、生活独立、基本沟通、风险意识等，大部分达到 3 分以上 —— 这是长期发展的底盘。</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span class="badge b-s2" style="flex:0 0 auto">重点能力</span><span style="font-size:13px;color:#4b5462">与个人发展方向相关的若干项达到 4 分以上，例如专业技术、独立思考、执行力、商业能力或沟通能力。</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span class="badge b-s1" style="flex:0 0 auto">突出优势</span><span style="font-size:13px;color:#4b5462">至少一两项形成特色与差异化，并且最好已经转化为可被他人看见的成果。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 总结 ================= -->
+    <section class="view" id="view-summary" hidden>
+      <div class="card">
+        <h3>最终总结表</h3>
+        <p class="hint">找到自己的发展方向。可以直接手填，也可以点右侧按钮，按当前评分自动填入候选。</p>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <button class="btn lite" id="btnAutoFill">按评估结果自动填入</button>
+          <button class="btn lite" id="btnClearSummary">清空本页</button>
+        </div>
+        <div class="field">
+          <label>我最强的三个维度</label>
+          <div class="row3">
+            <input type="text" data-sum="s1" placeholder="①" />
+            <input type="text" data-sum="s2" placeholder="②" />
+            <input type="text" data-sum="s3" placeholder="③" />
+          </div>
+        </div>
+        <div class="field">
+          <label>我最需要补足的三个维度</label>
+          <div class="row3">
+            <input type="text" data-sum="w1" placeholder="①" />
+            <input type="text" data-sum="w2" placeholder="②" />
+            <input type="text" data-sum="w3" placeholder="③" />
+          </div>
+        </div>
+        <div class="field">
+          <label>我最值得长期投入的一个优势</label>
+          <input type="text" data-sum="advantage" placeholder="例如：独立完成技术项目的能力" />
+        </div>
+        <div class="field">
+          <label>我目前最容易忽视的一个短板</label>
+          <input type="text" data-sum="blind" placeholder="往往是那些「身边的人都很强所以没意识到」的领域" />
+        </div>
+        <div class="field">
+          <label>我最缺乏的现实经历</label>
+          <input type="text" data-sum="exp" placeholder="例如：真实的商业交易、独立在陌生城市生活、带团队交付" />
+        </div>
+        <div class="field">
+          <label>我最需要建立的一项长期能力</label>
+          <input type="text" data-sum="longterm" placeholder="未来 3 年持续复利的那一项" />
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>未来一年最重要的三个目标</label>
+          <div class="row3">
+            <input type="text" data-sum="g1" placeholder="①" />
+            <input type="text" data-sum="g2" placeholder="②" />
+            <input type="text" data-sum="g3" placeholder="③" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 计划 ================= -->
+    <section class="view" id="view-plan" hidden>
+      <div class="card">
+        <h3>8 周改进周期</h3>
+        <p class="hint">不建议一次性提升 13 个维度。一次只处理四个方向：一个最重要的短板、一个第二短板、一个可放大的优势，加上基础能力的维护。</p>
+        <div id="planRows"></div>
+      </div>
+      <div class="card">
+        <h3>三个季度复盘问题（每 3 个月重做一次）</h3>
+        <p class="hint">这张表不是一次性考试。第一次评分后保留结果，三个月后重新评估，重点看这三个问题：</p>
+        <div style="display:grid;gap:12px">
+          <div class="field" style="margin:0">
+            <label>1. 我是不是存在能力发展的不均衡？<span class="opt">例如专业 5 分，但主动社交、生活独立只有 2 分</span></label>
+            <textarea data-plan="q1" placeholder="知识获取很强，但把知识转化成现实行动的能力还弱在哪里……"></textarea>
+          </div>
+          <div class="field" style="margin:0">
+            <label>2. 我的优势有没有真正转化为价值？<span class="opt">知道 ≠ 能做到，成绩好 ≠ 能做出产品</span></label>
+            <textarea data-plan="q2" placeholder="我的优势目前产出过什么可被他人看见的成果……"></textarea>
+          </div>
+          <div class="field" style="margin:0">
+            <label>3. 我是不是只在熟悉的环境里表现优秀？</label>
+            <textarea data-plan="q3" placeholder="换到陌生城市、陌生群体、真实商业环境，我还剩多少……"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>下一次评估</h3>
+        <div class="field" style="margin-bottom:0">
+          <label>计划复评日期</label>
+          <input type="text" data-plan="next" placeholder="例如：2027-01-30" />
+        </div>
+      </div>
+      <p class="footer-note">
+        最终希望得到的不是一张漂亮的高分表，<br />而是一张能准确指出自己下一步应该做什么的能力地图。
+      </p>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="fileInput" accept="application/json,.json" hidden />
+
+<script>
+/* =========================================================
+   数据：17 个一级维度 / 209 项子能力
+   ========================================================= */
+const GROUPS = {
+  A:{label:'A · 身心基础与内在能力', color:'var(--cA)'},
+  B:{label:'B · 学习与专业能力', color:'var(--cB)'},
+  C:{label:'C · 自我管理与现实生活', color:'var(--cC)'},
+  D:{label:'D · 人际关系与社会能力', color:'var(--cD)'},
+  E:{label:'E · 经济、社会与现实竞争', color:'var(--cE)'},
+  F:{label:'F · 工具与职业发展', color:'var(--cF)'}
+};
+
+const DIMS = [
+{id:1, group:'A', name:'身体健康与体能', goal:'拥有良好的身体状态、较强的活动能力，以及长期维持健康的能力。', items:[
+  ['1.1','睡眠管理','能否保持相对稳定的作息？能否识别影响睡眠的因素？是否知道如何改善睡眠质量？'],
+  ['1.2','营养管理','是否了解蛋白质、脂肪、碳水化合物、维生素和矿物质？能否合理安排饮食，而不是只依赖口味选择食物？'],
+  ['1.3','肌肉力量','是否具备基本的上肢、下肢、核心力量？能否通过合理训练持续增长力量？'],
+  ['1.4','心肺耐力','能否长时间步行、跑步、爬楼梯或进行其他运动？体力是否容易耗尽？'],
+  ['1.5','柔韧性与身体协调','是否具有基本的关节活动度、身体协调能力、平衡能力？'],
+  ['1.6','运动习惯','能否独立制定运动计划？能否长期坚持，并合理安排训练、恢复和强度？'],
+  ['1.7','健康管理','能否识别常见身体异常？是否知道什么时候应该观察、什么时候应该就医？是否会科学使用药物和保健品？'],
+  ['1.8','个人卫生与形象管理','能否保持口腔、皮肤、头发、身体清洁？能否合理管理个人仪容和衣着？']
+]},
+{id:2, group:'A', name:'心理素质与情绪管理', goal:'能够理解自己的心理活动，在压力、挫折、不确定性和复杂环境中保持稳定行动能力。', items:[
+  ['2.1','自我认知','是否清楚自己的性格、优势、缺点、兴趣、价值观和行为模式？'],
+  ['2.2','情绪识别','能否准确识别自己正在经历的情绪？能否区分愤怒、焦虑、失望、嫉妒、羞耻等不同感受？'],
+  ['2.3','情绪调节','能否在情绪激动时控制自己的行为，而不是冲动行事？能否使用有效方法恢复状态？'],
+  ['2.4','压力承受','面对学习、考试、人际关系和未来就业压力，能否保持正常生活和行动？'],
+  ['2.5','挫折恢复','失败、被拒绝、被批评之后，能否及时调整，而不是长期陷入消极状态？'],
+  ['2.6','自信与自我效能','是否相信自己有能力通过学习和行动改善现状？能否在没有外部认可的情况下继续努力？'],
+  ['2.7','不确定性耐受','面对没有标准答案、结果无法预测的事情，能否接受不确定性并采取行动？'],
+  ['2.8','心理弹性','能否从困难经历中总结经验、调整策略，而不轻易否定自己？'],
+  ['2.9','独处能力','能否独自生活、思考和娱乐，不因缺少他人陪伴而产生强烈不适？'],
+  ['2.10','求助与心理支持','能否识别自己无法独立解决的问题，并在适当时候寻求他人或专业支持？']
+]},
+{id:3, group:'A', name:'独立思考与批判性思维', goal:'形成独立判断能力，不轻易被他人、舆论、权威或情绪左右。', items:[
+  ['3.1','事实与观点区分','能否区分客观事实、主观评价、个人推测和价值判断？'],
+  ['3.2','证据判断','能否判断一个观点是否有可靠证据支持？是否会追溯原始数据和来源？'],
+  ['3.3','逻辑推理','能否发现逻辑矛盾、错误推论、偷换概念、循环论证等问题？'],
+  ['3.4','因果分析','能否区分相关性与因果关系？能否考虑混杂变量和其他解释？'],
+  ['3.5','概率与统计思维','是否理解概率、基准概率、风险、期望值、抽样偏差和统计误导？'],
+  ['3.6','认知偏差识别','能否识别确认偏误、幸存者偏差、沉没成本、从众效应等常见偏差？'],
+  ['3.7','多角度分析','能否从不同利益相关者、不同学科和不同时间尺度分析同一问题？'],
+  ['3.8','反向思考','能否主动寻找反例、反对意见和可能推翻自己结论的证据？'],
+  ['3.9','决策判断','面对多个选择时，能否根据目标、成本、收益、概率和风险进行比较？'],
+  ['3.10','认知修正','发现自己错了以后，能否主动更新观点，而不是为了维护面子继续坚持？']
+]},
+{id:4, group:'B', name:'学习能力与知识积累', goal:'能够高效获取、理解、记忆、运用知识，并最终形成自己的知识体系。', items:[
+  ['4.1','学习目标设定','能否明确自己学习某个知识的目的，而不是盲目收集资料？'],
+  ['4.2','自主学习','没有老师监督、没有课程安排时，能否独立学习新知识？'],
+  ['4.3','信息检索','能否利用搜索引擎、论文、书籍、技术文档等寻找高质量资料？'],
+  ['4.4','知识理解','能否真正理解概念、原理和机制，而不是只记住结论？'],
+  ['4.5','知识记忆','能否使用主动回忆、间隔复习、知识联结等方法提高长期记忆？'],
+  ['4.6','知识应用','能否将所学知识用于解决真实问题，而不局限于教材和考试？'],
+  ['4.7','知识迁移','能否把一个领域的知识和方法迁移到另一个领域？'],
+  ['4.8','知识体系构建','能否将零散知识组织成有层次、有联系的知识体系？'],
+  ['4.9','学习效率','能否识别低效学习方式，选择更有效的学习策略？'],
+  ['4.10','元认知','能否判断自己到底懂不懂？能否发现知识盲区并调整学习方法？'],
+  ['4.11','深度研究','能否围绕一个复杂问题持续阅读、比较资料、整理证据并形成结论？'],
+  ['4.12','知识输出','能否通过写作、讲解、教学、项目或作品把学到的知识表达出来？']
+]},
+{id:5, group:'B', name:'专业能力与技术实践', goal:'不仅掌握知识，更能够将专业知识转化为实际解决问题的能力。', items:[
+  ['5.1','专业基础','是否掌握本专业的基本概念、理论、数学基础和核心知识？'],
+  ['5.2','工具使用','是否熟练掌握本专业常用软件、开发工具、设备和平台？'],
+  ['5.3','问题拆解','能否把复杂的技术任务分解成可执行的小问题？'],
+  ['5.4','技术实现','能否将理论转化为代码、程序、硬件、产品或具体技术方案？'],
+  ['5.5','调试与排错','能否定位程序、设备、系统中的错误，并找到原因？'],
+  ['5.6','独立项目能力','能否独立完成从需求分析到实现、测试和交付的完整项目？'],
+  ['5.7','工程规范','是否重视代码质量、文档、测试、版本控制、可维护性和安全性？'],
+  ['5.8','技术协作','能否理解别人的代码、技术方案和接口，与他人共同完成项目？'],
+  ['5.9','技术创新','能否改进现有方案，提出更高效、更低成本或更可靠的技术实现？'],
+  ['5.10','作品积累','是否拥有可以展示的项目、作品、实验成果或技术记录？'],
+  ['5.11','行业认知','是否了解专业未来的发展方向、就业岗位、行业需求和技术趋势？'],
+  ['5.12','技术更新','能否持续学习新工具、新框架、新技术，同时判断哪些值得投入时间？']
+]},
+{id:6, group:'C', name:'自我管理与执行力', goal:'能够控制自己的时间、注意力、精力和行为，把想法转化为长期成果。', items:[
+  ['6.1','目标管理','能否设定明确、合理、可衡量的短期和长期目标？'],
+  ['6.2','目标拆解','能否把长期目标分解成阶段目标、每周任务和每日行动？'],
+  ['6.3','优先级管理','能否区分真正重要的事情和看起来紧急的事情？'],
+  ['6.4','时间管理','能否合理安排学习、休息、运动、社交和娱乐？'],
+  ['6.5','注意力管理','能否控制手机、网络、娱乐和其他干扰，保持较长时间的专注？'],
+  ['6.6','行动力','面对想做的事情，是否能够快速开始，而不是长期停留在计划阶段？'],
+  ['6.7','延迟满足','能否为了长期收益，放弃部分即时享受？'],
+  ['6.8','习惯建立','能否建立并维持有益的日常习惯？'],
+  ['6.9','精力管理','能否识别自己的精力规律，合理安排高强度脑力活动和休息？'],
+  ['6.10','自律与自控','没有他人监督时，能否按照自己设定的规则行动？'],
+  ['6.11','复盘能力','能否定期检查目标完成情况，找出失败原因并调整方法？'],
+  ['6.12','计划调整','当环境、资源或目标发生变化时，能否及时调整计划，而不是机械坚持？']
+]},
+{id:7, group:'C', name:'生活独立与实际问题解决', goal:'脱离家庭和学校提供的固定环境后，依然能够独立生活、处理事务和解决现实问题。', items:[
+  ['7.1','饮食自理','能否独立购买食材、安排饮食、做简单饭菜？'],
+  ['7.2','居住管理','能否清洁房间、整理物品、处理卫生和居住环境问题？'],
+  ['7.3','衣物管理','能否正确洗涤、晾晒、整理和维护衣物？'],
+  ['7.4','生活采购','能否辨别商品质量、价格、规格和真实需求，避免无效消费？'],
+  ['7.5','出行能力','能否独立规划陌生地点的交通路线，处理换乘、购票和突发状况？'],
+  ['7.6','办事能力','能否独立办理证件、银行业务、学校手续、合同和各种行政事务？'],
+  ['7.7','医疗事务处理','能否选择合适的医疗机构、描述症状、理解基本医疗信息和管理就医流程？'],
+  ['7.8','基础维修','能否处理简单的家具、电器、电脑、网络和生活设施故障？'],
+  ['7.9','应急处理','遇到火灾、交通事故、人员受伤、财物丢失等情况，能否采取恰当行动？'],
+  ['7.10','资源获取','碰到无法解决的问题，能否快速找到合适的部门、服务机构或专业人员？'],
+  ['7.11','独立居住','是否具备一个人在陌生城市长期生活的基本能力？'],
+  ['7.12','责任承担','能否为自己做出的选择承担后果，而不是习惯性依赖父母或他人收拾残局？']
+]},
+{id:8, group:'D', name:'沟通表达与主动社交', goal:'能够主动与不同的人建立交流，准确表达自己的需求、观点和想法。', items:[
+  ['8.1','主动开口','能否主动向不熟悉的人打招呼、开启话题、建立联系？'],
+  ['8.2','发起交流','能否在没有现成理由的情况下，自然地向别人发起交流？'],
+  ['8.3','提出请求','能否自然地请别人帮忙，包括需要对方花费时间和精力的事情？'],
+  ['8.4','需求表达','能否明确表达自己需要什么、希望对方怎么做？'],
+  ['8.5','观点表达','能否有条理地表达自己的立场、理由、依据和结论？'],
+  ['8.6','倾听能力','能否认真理解对方的内容，而不是只等待自己说话的机会？'],
+  ['8.7','提问能力','能否通过开放式问题、追问和澄清，获取更有价值的信息？'],
+  ['8.8','语言组织','能否在复杂场景中快速组织语言，避免表达混乱、遗漏重点？'],
+  ['8.9','非语言沟通','能否合理运用眼神、表情、语气、身体姿态传递信息？'],
+  ['8.10','说服表达','能否根据对方的需求和关注点调整表达方式，让对方理解并接受自己的观点？'],
+  ['8.11','公开表达','能否在多人面前演讲、介绍、汇报和回答问题？'],
+  ['8.12','社交灵活性','能否与不同年龄、身份、性格和背景的人进行适当交流？'],
+  ['8.13','线上沟通','能否合理使用微信、邮件、群聊等工具进行清晰、得体的沟通？']
+]},
+{id:9, group:'D', name:'合作、边界与冲突处理', goal:'能够在多人合作、利益不同、责任不清晰的环境中有效行动，同时保护自己的合理权益。', items:[
+  ['9.1','团队协作','能否与其他人共同完成一项复杂任务？'],
+  ['9.2','任务分工','能否明确划分工作内容、责任和完成标准？'],
+  ['9.3','进度协调','能否推动团队成员按时完成任务，及时发现进度问题？'],
+  ['9.4','可靠性','能否按时完成承诺，不轻易失信？'],
+  ['9.5','反馈能力','能否给别人提出具体、有帮助而不伤害对方的反馈？'],
+  ['9.6','接受批评','面对别人指出自己的问题，能否判断其合理性并改进？'],
+  ['9.7','拒绝能力','能否拒绝不合理请求，而不是因为不好意思就接受？'],
+  ['9.8','边界意识','能否识别别人对自己时间、精力、隐私和利益的过度索取？'],
+  ['9.9','利益协商','能否在任务、资源、报酬和责任分配上争取合理条件？'],
+  ['9.10','冲突处理','能否处理误会、争执、意见不合和利益冲突？'],
+  ['9.11','情绪化冲突控制','在争论中能否避免辱骂、攻击、情绪失控和人身评价？'],
+  ['9.12','团队决策','能否参与讨论、权衡不同意见、形成可执行的共同决定？'],
+  ['9.13','领导与组织','能否主动承担组织任务、协调人员、分配资源并推动结果落地？']
+]},
+{id:10, group:'D', name:'关系建立与维护', goal:'能够建立有质量的人际关系，并长期维持互相尊重、互相支持的关系。', items:[
+  ['10.1','关系拓展','能否主动认识新朋友，并逐渐建立联系？'],
+  ['10.2','初步熟悉','能否从普通交流逐渐过渡到较深入的交流？'],
+  ['10.3','共情能力','能否理解别人所处的环境、感受和心理需求？'],
+  ['10.4','尊重差异','能否接受别人的生活方式、兴趣、观点和价值观与自己不同？'],
+  ['10.5','信任建立','能否通过稳定、诚实、可靠的行为建立信任？'],
+  ['10.6','相互支持','能否在别人需要帮助时提供适当支持，同时也能接受别人的帮助？'],
+  ['10.7','关系维护','能否主动联系朋友、关心近况、保持关系，而非只在有事时联系？'],
+  ['10.8','深度交流','能否与别人讨论价值观、人生经历、重要选择和真实感受？'],
+  ['10.9','社交圈管理','是否拥有不同类型的关系，例如学习伙伴、兴趣伙伴、亲密朋友和合作伙伴？'],
+  ['10.10','识人判断','能否判断一个人的可靠性、诚信程度、合作意愿和行为模式？'],
+  ['10.11','不良关系识别','能否识别控制、利用、操纵、欺骗和长期单方面索取的关系？'],
+  ['10.12','关系修复','关系出现矛盾或疏远后，能否合理沟通、修复或者体面退出？']
+]},
+{id:11, group:'E', name:'金钱管理与商业认知', goal:'理解金钱如何管理、财富如何积累、市场如何运作，以及个人如何创造经济价值。', items:[
+  ['11.1','收支管理','能否清楚了解自己的收入、支出和资金流向？','11A · 个人财务管理'],
+  ['11.2','消费决策','能否判断一项消费是否真正值得，区分需求与欲望？'],
+  ['11.3','预算规划','能否根据自己的经济条件制定合理预算？'],
+  ['11.4','储蓄能力','能否积累一定应急资金，而不是将收入全部用于消费？'],
+  ['11.5','复利与时间价值','是否理解复利、通货膨胀、机会成本和资金时间价值？'],
+  ['11.6','金融知识','是否理解银行、贷款、利率、信用卡、保险、基金、股票等基本概念？'],
+  ['11.7','风险管理','能否识别高风险金融产品、非法集资、诈骗和不合理投资承诺？'],
+  ['11.8','财务规划','能否结合未来学业、就业、住房和生活需求规划资金？'],
+  ['11.9','市场需求识别','能否发现别人真实存在的问题、需求和付费意愿？','11B · 商业与价值创造'],
+  ['11.10','客户理解','能否理解不同客户的购买动机、预算、痛点和决策过程？'],
+  ['11.11','产品思维','能否把一个需求转化成有实际价值的产品或服务？'],
+  ['11.12','商业模式理解','能否理解企业如何获客、创造价值、收费、控制成本和盈利？'],
+  ['11.13','定价能力','能否理解成本定价、竞争定价、价值定价等基本思路？'],
+  ['11.14','销售能力','能否向别人介绍产品、理解顾客异议并促成合理交易？'],
+  ['11.15','谈判能力','能否在双方利益不同的情况下沟通条件，争取更好的交易结果？'],
+  ['11.16','成本与利润分析','能否计算成本、毛利、净利润、盈亏平衡点和投资回报？'],
+  ['11.17','商业机会判断','能否判断一个赚钱机会是否真实、可持续，以及自己是否具备执行条件？'],
+  ['11.18','变现能力','能否将自己的技术、知识、产品或服务转化为实际收入？']
+]},
+{id:12, group:'E', name:'社会认知、法律与责任意识', goal:'理解社会如何运行，知道自己在社会中的权利、义务、责任和行动边界。', items:[
+  ['12.1','基本法律知识','是否了解民法、刑法、劳动法、消费者权益保护等基本法律常识？','12A · 法律与规则意识'],
+  ['12.2','权利意识','是否知道自己在消费、就业、教育、租房、网络活动等方面的基本权利？'],
+  ['12.3','义务意识','是否理解合同履行、合法纳税、遵守公共规则等义务？'],
+  ['12.4','合同意识','能否阅读、理解和识别合同中的重要条款、责任和风险？'],
+  ['12.5','维权能力','遇到消费纠纷、劳动纠纷或侵权行为，是否知道如何保存证据和寻求合法救济？'],
+  ['12.6','法律风险识别','能否识别日常生活、兼职、网络交易和人际交往中的法律风险？'],
+  ['12.7','制度认知','是否了解政府、学校、企业、司法机构等组织的基本职责和运作机制？','12B · 社会运行认知'],
+  ['12.8','经济社会认知','是否理解就业、收入分配、人口变化、产业发展和社会流动等问题？'],
+  ['12.9','群体与阶层认知','能否理解不同地区、行业、家庭背景和社会群体的生活差异？'],
+  ['12.10','文化差异理解','能否理解不同地域、民族、国家和文化群体的习惯与价值观差异？'],
+  ['12.11','国际视野','是否了解国际关系、全球经济、地缘政治和各国制度的基本情况？'],
+  ['12.12','历史理解','能否通过历史事件理解制度、社会结构和文化传统的形成与变化？'],
+  ['12.13','公共规则意识','能否理解和遵守公共空间、交通、网络等环境中的规则？','12C · 社会责任与公共意识'],
+  ['12.14','诚信意识','是否能够做到诚实守信，不通过欺骗、隐瞒和不正当手段获取利益？'],
+  ['12.15','道德判断','面对利益冲突时，能否考虑他人的权益和社会影响？'],
+  ['12.16','公共参与','是否愿意了解社会问题，参与合理的公共事务和志愿活动？'],
+  ['12.17','责任承担','是否能够对自己的行为、承诺和造成的影响承担责任？'],
+  ['12.18','规则与利益平衡','能否理解规则的必要性，同时合理维护自己的权益？']
+]},
+{id:13, group:'E', name:'创造力、审美与生活体验', goal:'不仅会学习和工作，还拥有创造、欣赏、探索和丰富生活的能力。', items:[
+  ['13.1','创造性思维','能否针对一个问题提出多个不同解决思路？','13A · 创造与创新'],
+  ['13.2','想象力','能否在现有知识基础上设想新的产品、场景和解决方案？'],
+  ['13.3','问题发现','能否发现别人没有注意到的问题和潜在改进机会？'],
+  ['13.4','跨领域联想','能否结合不同领域的知识产生新思路？'],
+  ['13.5','创意落地','能否把创意变成实际作品、产品或解决方案？'],
+  ['13.6','实验精神','是否愿意尝试新的方法，通过测试和反馈改进结果？'],
+  ['13.7','创新判断','能否判断一个创意是真正有价值，还是仅仅看起来新颖？'],
+  ['13.8','视觉审美','是否具有对色彩、构图、比例、空间和视觉设计的基本判断能力？','13B · 艺术与审美'],
+  ['13.9','音乐素养','是否能够欣赏不同风格的音乐，理解旋律、节奏和基本音乐元素？'],
+  ['13.10','文学素养','是否能够欣赏文学作品，理解语言、人物、叙事和思想表达？'],
+  ['13.11','影视鉴赏','是否能够分析电影、纪录片和其他视听作品的表达方式与主题？'],
+  ['13.12','文化艺术认知','是否了解美术、建筑、戏剧、摄影、传统文化等领域的基本知识？'],
+  ['13.13','审美应用','是否能够把审美判断应用于穿衣、居住环境、个人作品和日常生活？'],
+  ['13.14','兴趣发展','是否拥有一两个愿意长期投入的非功利性兴趣？','13C · 兴趣与生活体验'],
+  ['13.15','文娱体验','是否体验过阅读、电影、音乐、展览、演出等多种文化活动？'],
+  ['13.16','自然探索','是否有主动接触自然、户外活动和探索不同环境的经历？'],
+  ['13.17','地域文化体验','是否主动了解不同城市、地区的生活方式、文化和历史？'],
+  ['13.18','旅行能力','能否自己规划旅行、控制预算、处理路线和突发问题？'],
+  ['13.19','社会体验','是否有志愿活动、社会实践、兼职、实习等课堂之外的经历？'],
+  ['13.20','生活感受能力','是否能够发现日常生活中的乐趣，而不是把生活完全压缩成学习和工作？']
+]},
+{id:14, group:'F', name:'信息检索与信息判断', goal:'在海量信息中快速找到可靠、准确、有价值的内容，并交叉验证。', items:[
+  ['14.1','搜索技巧','能否使用关键词组合、限定条件、专业数据库等提高搜索效率？'],
+  ['14.2','多源检索','能否从搜索引擎、论文、书籍、论坛、政府网站等不同渠道获取信息？'],
+  ['14.3','原始资料查找','能否找到新闻背后的原始文件、研究背后的论文和数据？'],
+  ['14.4','信源判断','能否判断资料来源是否可靠，作者是否具备相关专业背景？'],
+  ['14.5','信息交叉验证','能否从多个独立来源核实重要信息？'],
+  ['14.6','信息筛选','能否从大量信息中筛选出真正有价值的内容？'],
+  ['14.7','信息时效判断','能否区分长期有效的知识和容易过时的信息？'],
+  ['14.8','信息归档','能否建立个人资料库，方便长期保存、检索和调用？']
+]},
+{id:15, group:'F', name:'数字技术与 AI 协作', goal:'不要求每个人都是程序员，但应该具备利用数字工具与 AI 解决问题的能力。', items:[
+  ['15.1','计算机基础','是否理解操作系统、文件系统、网络、软件和硬件的基本原理？'],
+  ['15.2','办公软件','能否熟练使用文档、表格、演示文稿等工具？'],
+  ['15.3','数据处理','能否使用 Excel、Python 或其他工具进行数据清洗、分析和统计？'],
+  ['15.4','自动化能力','能否通过脚本、自动化工具减少重复性劳动？'],
+  ['15.5','AI 工具使用','能否利用 AI 完成资料整理、代码编写、研究、分析和内容创作？'],
+  ['15.6','AI 协作与验证','能否拆分复杂任务、向 AI 提供充分背景、检查输出错误，并对最终结果负责？'],
+  ['15.7','数字化工作流','能否将多个工具组合起来，建立高效的工作和学习流程？'],
+  ['15.8','网络安全','是否了解密码管理、双重验证、钓鱼攻击、恶意软件等常见风险？'],
+  ['15.9','隐私保护','是否懂得保护个人身份信息、账户信息、隐私数据和设备安全？'],
+  ['15.10','数据安全','是否具备数据备份、版本管理、重要文件恢复等基本能力？']
+]},
+{id:16, group:'F', name:'语言与知识表达', goal:'语言不仅是交流工具，也是获取信息、输出知识和扩大活动范围的重要工具。', items:[
+  ['16.1','中文阅读','能否快速理解复杂文章、专业书籍和政策文件？'],
+  ['16.2','中文写作','能否写出结构清晰、逻辑完整、表达准确的文章和报告？'],
+  ['16.3','逻辑表达','能否将复杂想法组织成别人容易理解的内容？'],
+  ['16.4','书面沟通','能否写好正式邮件、申请材料、项目报告和商务沟通文本？'],
+  ['16.5','英语阅读','能否直接阅读英文书籍、技术文档、论文和资料？'],
+  ['16.6','英语听力','能否理解英文课程、视频、访谈和日常对话？'],
+  ['16.7','英语口语','能否用英语表达自己的观点、需求和经历？'],
+  ['16.8','跨语言检索','能否使用英语等外语检索中文互联网较少涉及的信息？'],
+  ['16.9','知识讲解','能否把专业知识讲给没有相关背景的人听懂？'],
+  ['16.10','内容创作','能否通过文章、视频、演讲、教程等形式输出内容？']
+]},
+{id:17, group:'F', name:'职业发展与个人竞争力', goal:'理解自己的能力如何进入社会，如何找到机会，如何获得职业发展。', items:[
+  ['17.1','职业认知','是否了解不同职业的工作内容、收入、门槛和发展路径？'],
+  ['17.2','行业研究','能否分析一个行业的发展趋势、竞争格局和人才需求？'],
+  ['17.3','自我定位','能否结合兴趣、优势、能力和市场需求选择发展方向？'],
+  ['17.4','职业规划','能否规划大学期间的学习、实习、项目和就业准备？'],
+  ['17.5','求职能力','能否制作简历、准备面试、进行自我介绍和回答专业问题？'],
+  ['17.6','个人作品集','是否有能证明自身实力的项目、文章、作品和实践经历？'],
+  ['17.7','职业人脉','能否认识行业从业者、导师、前辈并建立适当的专业联系？'],
+  ['17.8','实习实践','是否有机会进入真实工作环境，了解企业和实际业务？'],
+  ['17.9','职业适应','能否适应职场规则、团队合作、工作责任和持续学习？'],
+  ['17.10','个人品牌','是否能通过可靠的成果、专业能力和公开作品形成良好的个人信誉？'],
+  ['17.11','职业转换','当行业、技术或市场发生变化时，能否迁移已有技能并学习新能力？']
+]}
+];
+
+const EXTRAS = [
+  ['x1','信息检索','能否快速找到可靠、准确、有价值的信息？'],
+  ['x2','AI 协作能力','能否有效使用 AI 完成研究、分析、编程和实际任务，并验证结果？'],
+  ['x3','公开表达','能否在多人面前演讲、展示成果、回答质疑？'],
+  ['x4','谈判能力','能否争取合理利益、讨论条件、处理双方分歧？'],
+  ['x5','销售与价值表达','能否让别人理解自己的产品、服务或能力的价值？'],
+  ['x6','风险意识','能否识别诈骗、安全隐患、法律风险和不合理承诺？'],
+  ['x7','信息安全','是否了解隐私保护、账号安全、数据备份和网络安全？'],
+  ['x8','跨文化理解','能否理解不同国家、文化、习惯和价值观之间的差异？'],
+  ['x9','英语及外语','能否通过外语获取知识、阅读资料和进行实际交流？'],
+  ['x10','环境适应能力','能否适应陌生环境、新群体、新规则和生活变化？'],
+  ['x11','项目组织能力','能否组织人员、分配任务、推动一个项目落地？'],
+  ['x12','职业探索能力','是否了解行业、岗位、职业路径，以及市场真正需要什么能力？']
+];
+
+const LEVEL = {1:'几乎不具备',2:'执行困难',3:'基本具备',4:'熟练掌握',5:'明显突出'};
+const LEVEL_FULL = {
+  1:'几乎不具备，通常无法独立完成',
+  2:'能理解基本方法，但实际执行困难',
+  3:'基本具备，普通场景能够完成',
+  4:'熟练掌握，复杂场景也能稳定运用',
+  5:'明显突出，能够灵活应用、总结方法，甚至指导别人'
+};
+const TREND = {up:'↑', flat:'→', down:'↓'};
+
+/* 推荐重要程度：面向 18 岁大学生的常见情况，可在页面上随时改 */
+const DEFAULT_I = {
+  1:{v:5, why:'所有能力的载体。睡眠与体能决定精力的上限，任何目标都建立在它上面。'},
+  2:{v:5, why:'18 岁情绪波动最大。情绪不稳时其他能力全部打折，它是行动力的开关。'},
+  3:{v:5, why:'信息过载和 AI 生成内容的时代，判断力决定你能不能真正用上其他所有能力。'},
+  4:{v:5, why:'大学四年的主线任务，也是毕业之后最重要的复利资产。'},
+  5:{v:5, why:'直接决定毕业时的市场定价，是你最需要拿得出手的那一项。'},
+  6:{v:5, why:'从想法到成果的唯一通道。这一项低，会同时拖累其他所有维度。'},
+  7:{v:4, why:'在校期间还有学校和家庭兜底，但 1～3 年内必须完全接管自己的生活。'},
+  8:{v:5, why:'几乎所有机会都从主动开口开始，也是这个阶段最常见、最隐形的短板。'},
+  9:{v:4, why:'团队作业、实习、宿舍关系高频用到。学会拒绝往往比学会配合更难。'},
+  10:{v:4, why:'决定长期的心理支持系统和机会来源，可以比前两项稍晚半步投入。'},
+  11:{v:4, why:'金钱观越早建立，复利时间越长；商业认知是「知识」和「收入」之间的桥。'},
+  12:{v:4, why:'低概率、高损失，属于必须有的保险型能力，不必精通但不能为零。'},
+  13:{v:3, why:'长期价值很高，但未来 1～3 年不紧迫，更适合作为生活的调剂和后劲。'},
+  14:{v:4, why:'与独立思考配套，决定你输入信息的质量。属于工具型能力，提升较快。'},
+  15:{v:4, why:'未来 3 年最直接影响效率的能力，但本质是放大器，需要有被放大的东西。'},
+  16:{v:4, why:'知识变现和影响力扩散的前置条件，其中「写作」性价比最高。'},
+  17:{v:4, why:'大一时可以晚半步，但要在三年内从 4 变成 5，越早探索成本越低。'}
+};
+
+/* =========================================================
+   状态
+   ========================================================= */
+const KEY = 'ability-map-18-v1';
+const ALL_CODES = [];
+DIMS.forEach(d => d.items.forEach(it => ALL_CODES.push(it[0])));
+
+let state = {
+  answers: {},
+  dimMeta: {},
+  extra: {},
+  summary: {},
+  plan: {},
+  seeded: false,
+  updatedAt: null
+};
+
+/* 用推荐值填充未设置的重要程度；force=true 时全部重设为推荐值 */
+function seedDefaults(force){
+  DIMS.forEach(d=>{
+    const m = state.dimMeta[d.id] || {};
+    if(force || m.i === undefined || m.i === 0 || m.i === null){
+      state.dimMeta[d.id] = {i: DEFAULT_I[d.id].v, trend: m.trend || ''};
+    }
+  });
+  state.seeded = true;
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){
+      const o = JSON.parse(raw);
+      state.answers = o.answers || {};
+      state.dimMeta = o.dimMeta || {};
+      state.extra = o.extra || {};
+      state.summary = o.summary || {};
+      state.plan = o.plan || {};
+      state.seeded = !!o.seeded;
+      state.updatedAt = o.updatedAt || null;
+    }
+  }catch(e){ console.warn('读取本地数据失败', e); }
+  // 首次使用（或旧版本数据）补上推荐的重要程度，用户手动改过的值不会被覆盖
+  if(!state.seeded) seedDefaults(false);
+}
+let saveTimer = null;
+function saveState(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    state.updatedAt = Date.now();
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch(e){ toast('本地保存失败（浏览器限制）'); }
+  }, 180);
+}
+
+/* =========================================================
+   工具
+   ========================================================= */
+function $(s, r){ return (r||document).querySelector(s); }
+function $$(s, r){ return Array.from((r||document).querySelectorAll(s)); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function dimStats(dim){
+  let sum = 0, n = 0, unv = 0;
+  dim.items.forEach(it=>{
+    const v = state.answers[it[0]];
+    if(v === -1) unv++;
+    else if(v >= 1 && v <= 5){ sum += v; n++; }
+  });
+  return { avg: n ? sum / n : 0, rated: n, unv, total: dim.items.length };
+}
+function dimMeta(id){
+  const m = state.dimMeta[id] || {};
+  return { i: m.i || 0, trend: m.trend || '' };
+}
+function strategy(p, i){
+  if(!p || !i) return {label:'待评估', cls:'b-none'};
+  if(p < 2.5){
+    if(i >= 4) return {label:'优先补足', cls:'b-s1'};
+    return {label:'暂缓提升', cls:'b-s4'};
+  }
+  if(p >= 3.5){
+    if(i >= 4) return {label:'重点利用', cls:'b-s2'};
+    return {label:'保持优势', cls:'b-s3'};
+  }
+  if(i === 5) return {label:'未来瓶颈', cls:'b-s1'};
+  if(i === 4) return {label:'第二梯队', cls:'b-s2'};
+  if(i >= 1) return {label:'稳步提升', cls:'b-s3'};
+  return {label:'待评估', cls:'b-none'};
+}
+
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  const dur = Math.min(6000, Math.max(1800, msg.length * 95));
+  t._t = setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+/* =========================================================
+   渲染：评估页
+   ========================================================= */
+function headHTML(dim){
+  const g = GROUPS[dim.group];
+  const s = dimStats(dim);
+  const m = dimMeta(dim.id);
+  const st = strategy(s.avg, m.i);
+  const dflt = DEFAULT_I[dim.id];
+  const iSeg = [1,2,3,4,5].map(v=>`<button data-dim="${dim.id}" data-kind="i" data-val="${v}" class="${m.i===v?'on':''}" title="重要程度 ${v}">${v}</button>`).join('');
+  const tSeg = [['up','↑'],['flat','→'],['down','↓']].map(([k,ch])=>`<button data-dim="${dim.id}" data-kind="t" data-val="${k}" class="${m.trend===k?'on':''}" title="${k==='up'?'最近半年明显进步':k==='flat'?'基本保持不变':'最近半年退步'}">${ch}</button>`).join('');
+  return `
+    <div class="dh-top">
+      <div class="dnum" style="--c:${g.color}">${dim.id}</div>
+      <div class="dh-title">
+        <h2>${esc(dim.name)}<span class="badge ${st.cls}">${st.label}</span></h2>
+        <p class="goal">${esc(dim.goal)}</p>
+      </div>
+      <div class="dh-stat"><b>${s.avg ? s.avg.toFixed(1) : '—'}</b><span>均分 P</span></div>
+    </div>
+    <div class="dh-ctrl">
+      <div class="ctrl-group">
+        <label>重要程度 I</label>
+        <div class="seg">${iSeg}</div>
+        <button class="info" data-why="${dim.id}" title="查看推荐值 ${dflt.v} 的理由">?</button>
+      </div>
+      <div class="ctrl-group"><label>趋势</label><div class="seg trend">${tSeg}</div></div>
+      <div class="prog">${s.rated}/${s.total} 已评${s.unv?` · 未验证 ${s.unv}`:''}${s.rated===s.total?' <b>✓</b>':''}</div>
+    </div>`;
+}
+
+function itemHTML(it){
+  const [code, name, desc] = it;
+  const v = state.answers[code];
+  const chips = [1,2,3,4,5].map(n=>
+    `<button class="chip ${v===n?'on':''}" data-code="${code}" data-v="${n}" title="${LEVEL_FULL[n]}">${n}</button>`
+  ).join('');
+  return `
+    <div class="item">
+      <div class="item-main">
+        <div class="item-name"><span class="code">${code}</span><span class="name">${esc(name)}</span></div>
+        <p class="desc">${esc(desc)}</p>
+      </div>
+      <div class="rate">${chips}<button class="chip nv ${v===-1?'on':''}" data-code="${code}" data-v="-1" title="还没真正经历过，先不给自己打分">未验证</button></div>
+    </div>`;
+}
+
+function renderDims(){
+  const host = $('#dims');
+  let lastGroup = '';
+  let html = '';
+  DIMS.forEach(dim=>{
+    if(dim.group !== lastGroup){
+      lastGroup = dim.group;
+      html += `<div style="display:flex;align-items:center;gap:10px;margin:22px 4px 10px">
+        <span style="font-size:11.5px;font-weight:700;letter-spacing:1px;color:#9aa2b0">${GROUPS[dim.group].label}</span>
+        <span style="flex:1;height:1px;background:var(--line)"></span></div>`;
+    }
+    let body = '';
+    dim.items.forEach((it, idx)=>{
+      if(it[3]) body += `<div class="sub-label">${it[3]}</div>`;
+      body += itemHTML(it);
+    });
+    html += `<section class="dim" id="dim-${dim.id}">
+      <div class="dim-head">${headHTML(dim)}</div>
+      ${body}
+    </section>`;
+  });
+  host.innerHTML = html;
+}
+
+function renderExtras(){
+  $('#extras').innerHTML = EXTRAS.map(it=>{
+    const [code, name, desc] = it;
+    const v = state.extra[code];
+    const chips = [1,2,3,4,5].map(n=>`<button class="chip ${v===n?'on':''}" data-ex="${code}" data-v="${n}" title="${LEVEL_FULL[n]}">${n}</button>`).join('');
+    return `<div class="item">
+      <div class="item-main">
+        <div class="item-name"><span class="name">${esc(name)}</span></div>
+        <p class="desc">${esc(desc)}</p>
+      </div>
+      <div class="rate">${chips}<button class="chip nv ${v===-1?'on':''}" data-ex="${code}" data-v="-1" title="暂未经历">未验证</button></div>
+    </div>`;
+  }).join('');
+}
+
+function renderSideNav(){
+  let html = '';
+  let last = '';
+  DIMS.forEach(d=>{
+    if(d.group !== last){
+      last = d.group;
+      html += `<div class="side-title">${GROUPS[d.group].label}</div>`;
+    }
+    const s = dimStats(d);
+    const done = s.rated + s.unv === s.total;
+    html += `<a class="side-item ${done?'done':''}" href="#dim-${d.id}" data-jump="${d.id}">
+      <span class="n" style="--c:${GROUPS[d.group].color}">${d.id}</span>
+      <span class="nm">${esc(d.name)}</span>
+      <span class="cnt">${done?'✓':s.rated+'/'+s.total}</span>
+    </a>`;
+  });
+  $('#sideNav').innerHTML = html;
+}
+
+function refreshDim(dimId){
+  const dim = DIMS.find(d=>d.id === Number(dimId));
+  if(!dim) return;
+  const head = $(`#dim-${dim.id} .dim-head`);
+  if(head) head.innerHTML = headHTML(dim);
+  const s = dimStats(dim);
+  const nav = $(`.side-item[data-jump="${dim.id}"]`);
+  if(nav){
+    const done = s.rated + s.unv === s.total;
+    nav.classList.toggle('done', done);
+    const cnt = $('.cnt', nav);
+    if(cnt) cnt.textContent = done ? '✓' : s.rated + '/' + s.total;
+  }
+}
+
+function updateGlobal(){
+  let rated = 0;
+  ALL_CODES.forEach(c=>{ if(state.answers[c]) rated++; });
+  const pct = Math.round(rated / ALL_CODES.length * 100);
+  $('#topProgress').style.width = pct + '%';
+  $('#topProgressText').textContent = pct + '%  ' + rated + '/' + ALL_CODES.length;
+}
+
+/* =========================================================
+   渲染：总表
+   ========================================================= */
+let profileSort = {key:'', dir:1};
+
+function dimRows(){
+  return DIMS.map(d=>{
+    const s = dimStats(d);
+    const m = dimMeta(d.id);
+    return {d, avg:s.avg, rated:s.rated, unv:s.unv, total:s.total, i:m.i, trend:m.trend, gap: m.i ? m.i - s.avg : 0};
+  });
+}
+
+function renderProfile(){
+  const rows = dimRows();
+  const ratedAll = rows.reduce((a,r)=>a+r.rated,0);
+  const sumP = rows.reduce((a,r)=>a+r.avg*r.rated,0);
+  const avgP = ratedAll ? sumP/ratedAll : 0;
+  const withI = rows.filter(r=>r.i>0);
+  const avgI = withI.length ? withI.reduce((a,r)=>a+r.i,0)/withI.length : 0;
+  const gaps = rows.filter(r=>r.i>=4 && r.avg>0 && r.avg<3).length;
+  const unvAll = rows.reduce((a,r)=>a+r.unv,0);
+
+  $('#profileStats').innerHTML = `
+    <div class="stat"><div class="k">已评分子能力</div><div class="v">${ratedAll}<small> / ${ALL_CODES.length}</small></div></div>
+    <div class="stat"><div class="k">整体能力均分 P</div><div class="v">${avgP?avgP.toFixed(2):'—'}<small> / 5</small></div></div>
+    <div class="stat"><div class="k">重要程度均分 I</div><div class="v">${avgI?avgI.toFixed(2):'—'}<small> / 5</small></div></div>
+    <div class="stat"><div class="k">高优先缺口维度</div><div class="v" style="color:${gaps?'#d92d20':'#14181f'}">${gaps}<small> I≥4 且 P&lt;3</small></div></div>
+    <div class="stat"><div class="k">未验证条目</div><div class="v">${unvAll}<small> 需用经历检验</small></div></div>`;
+
+  const body = $('#profileBody');
+  if(profileSort.key){
+    const k = profileSort.key, dir = profileSort.dir;
+    rows.sort((a,b)=>{
+      const va = a[k] ?? 0, vb = b[k] ?? 0;
+      return (va - vb) * dir;
+    });
+  }
+  body.innerHTML = rows.map(r=>{
+    const st = strategy(r.avg, r.i);
+    const tr = r.trend ? `<span class="trend t-${r.trend}">${TREND[r.trend]}</span>` : `<span class="trend" style="color:#c9cfd8">—</span>`;
+    return `<tr>
+      <td class="td-name">${r.d.id}. ${esc(r.d.name)}</td>
+      <td class="td-num">${r.total}</td>
+      <td class="td-num">${r.rated}${r.unv?`<span style="color:#a2aab8"> +${r.unv}未</span>`:''}</td>
+      <td><div class="bar-cell"><div class="bar"><i style="width:${(r.avg/5*100).toFixed(0)}%"></i></div><span>${r.avg?r.avg.toFixed(1):'—'}</span></div></td>
+      <td><div class="bar-cell"><div class="bar warm"><i style="width:${(r.i/5*100).toFixed(0)}%"></i></div><span>${r.i||'—'}</span></div></td>
+      <td>${tr}</td>
+      <td><span class="badge ${st.cls}">${st.label}</span></td>
+    </tr>`;
+  }).join('');
+
+  // 缺口清单
+  const list = [];
+  DIMS.forEach(d=>{
+    const m = dimMeta(d.id);
+    if(!m.i || m.i < 4) return;
+    d.items.forEach(it=>{
+      const v = state.answers[it[0]];
+      if(v >= 1 && v <= 3) list.push({code:it[0], name:it[1], v, i:m.i, dim:d.name, score:m.i - v});
+    });
+  });
+  list.sort((a,b)=> b.score - a.score || a.v - b.v);
+  const top = list.slice(0, 24);
+  const host = $('#gapList');
+  if(!top.length){
+    host.innerHTML = `<p class="hint" style="margin:0">还没有识别出明显缺口 —— 请先完成评分，并给相关维度设置重要程度 I。</p>`;
+  }else{
+    host.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:7px">` + top.map(x=>
+      `<span class="qchip" style="display:inline-flex;gap:7px;align-items:center;background:${x.v<=2?'#fff1f1':'#fff8ec'};border-color:${x.v<=2?'#fbd5d1':'#fbe3bd'}">
+        <b style="font-weight:600;color:#3c4450">${esc(x.name)}</b>
+        <span style="color:#98a0ae;font-size:11px">${esc(x.dim)}</span>
+        <span style="font-variant-numeric:tabular-nums;color:${x.v<=2?'#d92d20':'#b45309'};font-weight:700">${x.v}</span>
+      </span>`).join('') + `</div>
+      <p class="hint" style="margin:12px 0 0">共 ${list.length} 项符合条件，这里显示优先级最高的 ${top.length} 项。</p>`;
+  }
+}
+
+/* =========================================================
+   渲染：优先级
+   ========================================================= */
+function renderPriority(){
+  const q = {1:[],2:[],3:[],4:[],mid:[]};
+  DIMS.forEach(d=>{
+    const s = dimStats(d), m = dimMeta(d.id);
+    if(!s.avg || !m.i){ return; }
+    const chip = `<span class="qchip">${d.id}. ${esc(d.name)} <b style="font-variant-numeric:tabular-nums">${s.avg.toFixed(1)}/${m.i}</b></span>`;
+    if(s.avg < 2.5 && m.i >= 4) q[1].push(chip);
+    else if(s.avg >= 3.5 && m.i >= 4) q[2].push(chip);
+    else if(s.avg < 2.5 && m.i <= 3) q[3].push(chip);
+    else if(s.avg >= 3.5 && m.i <= 3) q[4].push(chip);
+    else q.mid.push(chip);
+  });
+  const fill = (id, arr) => { $(id).innerHTML = arr.length ? arr.join('') : `<span class="empty">暂无</span>`; };
+  fill('#q1', q[1]); fill('#q2', q[2]); fill('#q3', q[3]); fill('#q4', q[4]);
+
+  const mid = [];
+  DIMS.forEach(d=>{
+    const s = dimStats(d), m = dimMeta(d.id);
+    if(!s.avg || !m.i) return;
+    if(s.avg >= 2.5 && s.avg < 3.5) mid.push({d, avg:s.avg, i:m.i});
+  });
+  mid.sort((a,b)=> b.i - a.i || a.avg - b.avg);
+  $('#midList').innerHTML = mid.length ? mid.map(x=>{
+    const st = strategy(x.avg, x.i);
+    const tip = x.i === 5 ? '非常值得提升，可能是未来发展的瓶颈' : x.i === 4 ? '可以作为第二梯队的提升目标' : '维持基本水平即可';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line2)">
+      <span class="td-name">${x.d.id}. ${esc(x.d.name)}</span>
+      <span class="td-num" style="color:#6a7280">P ${x.avg.toFixed(1)} · I ${x.i}</span>
+      <span class="badge ${st.cls}">${st.label}</span>
+      <span style="font-size:12px;color:#98a0ae;margin-left:auto">${tip}</span>
+    </div>`;
+  }).join('') : `<p class="hint" style="margin:0">暂无处于中间地带的维度。</p>`;
+}
+
+/* =========================================================
+   渲染：总结 / 计划
+   ========================================================= */
+function renderSummary(){
+  $$('[data-sum]').forEach(el=>{ el.value = state.summary[el.dataset.sum] || ''; });
+}
+function renderPlan(){
+  const opts = DIMS.map(d=>`<option value="${d.id}">${d.id}. ${esc(d.name)}</option>`).join('');
+  const rows = [
+    {k:'p1', t:'短板提升', s:'最重要的一个低分维度', r:'每周进行 2～3 次针对性练习', ph:'例如：沟通能力不足 → 8 周内主动向不太熟悉的人提出 8 次真实请求，并练习处理被拒绝。'},
+    {k:'p2', t:'第二短板', s:'第二重要的低分维度', r:'每周完成一个具体任务', ph:'例如：商业认知不足 → 8 周内研究 3 个真实商业案例，分析客户需求、成本、定价与盈利方式。'},
+    {k:'p3', t:'优势利用', s:'一个高分、高重要性的维度', r:'应用到真实项目或场景', ph:'例如：专业能力较强 → 8 周内独立完成一个可以展示的项目，而不是停留在看教程。'},
+    {k:'p4', t:'基础维护', s:'身体、学习、生活等基础能力', r:'保持稳定，不因专攻而退步', ph:'例如：每周 3 次运动、每周复盘一次作息、保持基本社交联系。'}
+  ];
+  $('#planRows').innerHTML = rows.map(r=>{
+    const cur = state.plan[r.k + '_dim'] || '';
+    return `<div class="plan-row">
+      <div class="plan-type">${r.t}<small>${r.s}</small></div>
+      <div>
+        <select data-plan-sel="${r.k}_dim" style="margin-bottom:8px">
+          <option value="">— 选择维度 —</option>${opts}
+        </select>
+        <textarea data-plan="${r.k}" placeholder="${esc(r.ph)}" style="min-height:60px">${esc(state.plan[r.k] || '')}</textarea>
+      </div>
+      <div>
+        <input type="text" data-plan="${r.k}_freq" placeholder="${esc(r.r)}" value="${esc(state.plan[r.k+'_freq'] || '')}" />
+      </div>
+    </div>`;
+  }).join('');
+  // 恢复 select
+  rows.forEach(r=>{
+    const sel = $(`[data-plan-sel="${r.k}_dim"]`);
+    if(sel) sel.value = state.plan[r.k + '_dim'] || '';
+  });
+  $$('[data-plan]').forEach(el=>{
+    if(el.tagName === 'TEXTAREA' || el.type === 'text'){
+      el.value = state.plan[el.dataset.plan] || '';
+    }
+  });
+}
+
+/* =========================================================
+   视图切换
+   ========================================================= */
+let currentView = 'assess';
+function switchView(name){
+  currentView = name;
+  $$('.view').forEach(v=> v.hidden = v.id !== 'view-' + name);
+  $$('#tabs button').forEach(b=> b.classList.toggle('active', b.dataset.view === name));
+  if(name === 'profile') renderProfile();
+  if(name === 'priority') renderPriority();
+  if(name === 'summary') renderSummary();
+  if(name === 'plan') renderPlan();
+  window.scrollTo(0, 0);
+}
+
+/* =========================================================
+   导出 / 导入
+   ========================================================= */
+function download(filename, content, type){
+  const blob = new Blob([content], {type: type || 'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+}
+function stamp(){
+  const d = new Date();
+  const p = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`;
+}
+const TREND_LABEL = {up:'近半年明显进步', flat:'基本保持不变', down:'近半年退步'};
+const SCORE_LABEL = {
+  1:'几乎不具备，通常无法独立完成',
+  2:'能理解基本方法，但实际执行困难',
+  3:'基本具备，普通场景能够完成',
+  4:'熟练掌握，复杂场景也能稳定运用',
+  5:'明显突出，能够灵活应用、总结方法，甚至指导别人'
+};
+const I_LABEL = {
+  1:'暂时不太重要', 2:'有一定价值，但不急迫', 3:'比较重要，值得保持',
+  4:'非常重要，需要主动投入', 5:'核心能力，明显影响长期发展'
+};
+const SUMMARY_LABELS = {
+  s1:'最强的三个维度 ①', s2:'最强的三个维度 ②', s3:'最强的三个维度 ③',
+  w1:'最需补足的三个维度 ①', w2:'最需补足的三个维度 ②', w3:'最需补足的三个维度 ③',
+  advantage:'最值得长期投入的一个优势', blind:'目前最容易忽视的一个短板',
+  exp:'最缺乏的现实经历', longterm:'最需要建立的一项长期能力',
+  g1:'未来一年最重要的目标 ①', g2:'未来一年最重要的目标 ②', g3:'未来一年最重要的目标 ③'
+};
+const PLAN_LABELS = {p1:'短板提升', p2:'第二短板', p3:'优势利用', p4:'基础维护'};
+
+function statusOf(v){
+  if(v === -1) return 'unverified';
+  if(v >= 1 && v <= 5) return 'rated';
+  return 'unrated';
+}
+
+/* 组装一份「带名称」的完整评估数据，可直接发给 AI 分析 */
+function buildExport(){
+  const dims = DIMS.map(d=>{
+    const s = dimStats(d), m = dimMeta(d.id);
+    const st = strategy(s.avg, m.i);
+    return {
+      id: d.id,
+      name: d.name,
+      group: GROUPS[d.group].label,
+      goal: d.goal,
+      importance: m.i || null,
+      importanceLabel: m.i ? I_LABEL[m.i] : null,
+      importanceNote: DEFAULT_I[d.id].why,
+      trend: m.trend || null,
+      trendLabel: m.trend ? TREND_LABEL[m.trend] : null,
+      averageScore: s.avg ? Number(s.avg.toFixed(2)) : null,
+      ratedCount: s.rated,
+      unverifiedCount: s.unv,
+      totalAbilities: s.total,
+      strategy: st.label,
+      abilities: d.items.map(it=>{
+        const v = state.answers[it[0]];
+        const status = statusOf(v);
+        return {
+          code: it[0],
+          name: it[1],
+          question: it[2],
+          score: status === 'rated' ? v : null,
+          status: status,
+          level: status === 'rated' ? SCORE_LABEL[v] : (status === 'unverified' ? '尚未在真实场景中验证，不计入均分' : '未评分')
+        };
+      })
+    };
+  });
+
+  let totalRated = 0, totalUnv = 0, sumP = 0;
+  dims.forEach(d=>{
+    totalRated += d.ratedCount;
+    totalUnv += d.unverifiedCount;
+    if(d.averageScore !== null) sumP += d.averageScore * d.ratedCount;
+  });
+  const iVals = dims.filter(d=>d.importance).map(d=>d.importance);
+
+  const gaps = [];
+  dims.forEach(d=>{
+    if(!d.importance || d.importance < 4) return;
+    d.abilities.forEach(a=>{
+      if(a.status === 'rated' && a.score <= 3){
+        gaps.push({
+          ability: a.name, code: a.code, score: a.score,
+          dimension: d.name, importance: d.importance, gap: d.importance - a.score
+        });
+      }
+    });
+  });
+  gaps.sort((a,b)=> b.gap - a.gap || a.score - b.score);
+
+  const supplementary = EXTRAS.map(it=>{
+    const v = state.extra[it[0]];
+    const status = statusOf(v);
+    return {
+      name: it[1], question: it[2],
+      score: status === 'rated' ? v : null,
+      status,
+      level: status === 'rated' ? SCORE_LABEL[v] : (status === 'unverified' ? '尚未在真实场景中验证' : '未评分')
+    };
+  });
+
+  const selfSummary = {};
+  Object.keys(SUMMARY_LABELS).forEach(k=>{ selfSummary[SUMMARY_LABELS[k]] = state.summary[k] || ''; });
+
+  const actionPlan = ['p1','p2','p3','p4'].map(k=>{
+    const dimId = state.plan[k + '_dim'];
+    const dim = DIMS.find(d=>String(d.id) === String(dimId));
+    return {
+      type: PLAN_LABELS[k],
+      dimension: dim ? dim.name : '',
+      goal: state.plan[k] || '',
+      weeklyRhythm: state.plan[k + '_freq'] || ''
+    };
+  });
+  const review = {
+    nextReviewDate: state.plan.next || '',
+    unevenDevelopment: state.plan.q1 || '',
+    advantageToValue: state.plan.q2 || '',
+    onlyInFamiliarEnv: state.plan.q3 || ''
+  };
+
+  return {
+    schemaVersion: 2,
+    assessment: '18 岁大学生全面发展能力体系',
+    exportedAt: new Date().toISOString(),
+    readingGuide: {
+      description: '这是一份个人能力自评结果：17 个一级维度，共 209 项子能力；每项 1–5 分，另有「未验证」（尚未在真实场景中检验）与「未评分」两种状态。',
+      scoreScale: SCORE_LABEL,
+      importanceScale: I_LABEL,
+      trend: TREND_LABEL,
+      nullScoreMeaning: 'score 为 null 表示该项未评分或标记为未验证，不参与均分计算。',
+      strategyRule: 'P<2.5 且 I≥4 → 优先补足；P≥3.5 且 I≥4 → 重点利用；P≥3.5 且 I≤3 → 保持优势；P<2.5 且 I≤3 → 暂缓提升；P≈3 时 I=5 视为未来瓶颈、I=4 视为第二梯队。'
+    },
+    analysisPrompt: '请基于这份能力自评数据分析：1) 我的能力结构是否存在明显不均衡，具体是哪几项拉开的差距；2) 哪些高分能力还没有转化为可被他人看见的成果或收入；3) 结合 importance 与 score 的差值，指出最值得优先投入的 3 项能力，并各给出一个 8 周内可验证的具体行动；4) 指出我可能高估了自己（没有现实证据支撑）的评分。回答要具体到能力名称，不要泛泛而谈。',
+    overview: {
+      totalDimensions: DIMS.length,
+      totalAbilities: ALL_CODES.length,
+      rated: totalRated,
+      unverified: totalUnv,
+      unrated: ALL_CODES.length - totalRated - totalUnv,
+      averageScore: totalRated ? Number((sumP / totalRated).toFixed(2)) : null,
+      averageImportance: iVals.length ? Number((iVals.reduce((a,b)=>a+b,0) / iVals.length).toFixed(2)) : null,
+      highPriorityGapCount: dims.filter(d=>d.importance >= 4 && d.averageScore !== null && d.averageScore < 3).length
+    },
+    dimensions: dims,
+    supplementaryAbilities: supplementary,
+    keyGaps: gaps.slice(0, 30),
+    selfSummary,
+    actionPlan,
+    review,
+    raw: {
+      answers: state.answers,
+      dimMeta: state.dimMeta,
+      extra: state.extra,
+      summary: state.summary,
+      plan: state.plan
+    }
+  };
+}
+
+function exportJSON(strip){
+  const payload = buildExport();
+  if(strip) stripIdentifiers(payload);
+  download(`能力评估-${strip ? '无编号-' : ''}${stamp()}.json`, JSON.stringify(payload, null, 2), 'application/json');
+  toast(strip
+    ? 'JSON 已导出（不含编号，只剩名称与分数，适合发给 AI）'
+    : 'JSON 已导出（含能力名称，可直接发给 AI 分析）');
+}
+
+/* 去掉所有编号，避免 1.1 / 1.2 这类代码被误读成分数 */
+function stripIdentifiers(ex){
+  ex.dimensions.forEach(d=>{
+    delete d.id;
+    d.abilities.forEach(a=>{ delete a.code; });
+  });
+  (ex.keyGaps || []).forEach(g=>{ delete g.code; });
+  delete ex.raw;
+  ex.format = 'no-identifiers';
+  ex.readingGuide.description = '这是一份个人能力自评结果（不含编号）：17 个一级维度，共 209 项子能力，每项以名称标识、按 1–5 分评价。score 为本项得分，importance 为该维度的重要程度，两者都是 1–5 分。';
+  ex.readingGuide.nullScoreMeaning = 'score 为 null 表示该项未评分或标记为未验证，不参与均分计算。';
+  return ex;
+}
+
+/* 一份精简的 Markdown 文本，适合直接粘贴到对话框里 */
+function buildTextReport(){
+  const ex = buildExport();
+  const L = [];
+  L.push(`# 能力评估结果 · 18 岁大学生全面发展能力体系`);
+  L.push(`导出时间：${new Date().toLocaleString('zh-CN')}`);
+  L.push(`已评分 ${ex.overview.rated}/${ex.overview.totalAbilities} 项 · 整体均分 P ${ex.overview.averageScore ?? '—'} · 平均重要度 I ${ex.overview.averageImportance ?? '—'}`);
+  L.push('');
+  L.push('## 一、各维度得分（P 当前能力 / I 重要程度 / 趋势）');
+  ex.dimensions.forEach(d=>{
+    const head = `${d.id}. ${d.name} —— P ${d.averageScore ?? '—'} / I ${d.importance ?? '—'}${d.trendLabel ? ' / ' + d.trendLabel : ''}【${d.strategy}】`;
+    L.push(head);
+    const rated = d.abilities.filter(a=>a.status === 'rated');
+    if(rated.length){
+      L.push('   ' + rated.map(a=>`${a.name} ${a.score}`).join('；'));
+    }
+    const unv = d.abilities.filter(a=>a.status === 'unverified').map(a=>a.name);
+    if(unv.length) L.push('   未验证：' + unv.join('、'));
+  });
+  const sup = ex.supplementaryAbilities.filter(s=>s.status === 'rated');
+  if(sup.length){
+    L.push('');
+    L.push('## 二、补充能力');
+    L.push('   ' + sup.map(s=>`${s.name} ${s.score}`).join('；'));
+  }
+  if(ex.keyGaps.length){
+    L.push('');
+    L.push('## 三、最需要补足的具体能力（按缺口排序）');
+    ex.keyGaps.slice(0,15).forEach(g=>{
+      L.push(`   - ${g.ability}（${g.dimension}）当前 ${g.score} 分，重要度 ${g.importance}`);
+    });
+  }
+  const sm = Object.entries(ex.selfSummary).filter(([,v])=>v);
+  if(sm.length){
+    L.push('');
+    L.push('## 四、自我总结');
+    sm.forEach(([k,v])=> L.push(`   - ${k}：${v}`));
+  }
+  const plan = ex.actionPlan.filter(p=>p.dimension || p.goal);
+  if(plan.length){
+    L.push('');
+    L.push('## 五、8 周行动计划');
+    plan.forEach(p=> L.push(`   - ${p.type}：${p.dimension || '未选'}｜${p.goal || '未填写'}${p.weeklyRhythm ? '｜' + p.weeklyRhythm : ''}`));
+  }
+  return L.join('\n');
+}
+
+async function copyReport(){
+  const txt = buildTextReport();
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(txt);
+      toast('文本报告已复制，可直接粘贴给 AI');
+      return;
+    }
+  }catch(e){ /* 落到下面的兜底方案 */ }
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    const ok = document.execCommand('copy');
+    ta.remove();
+    toast(ok ? '文本报告已复制，可直接粘贴给 AI' : '复制失败，请改用「导出 JSON」');
+  }catch(e){
+    toast('复制失败，请改用「导出 JSON」');
+  }
+}
+function exportCSV(){
+  const rows = [['编号','一级维度','子能力','评分','未验证','评估内容']];
+  DIMS.forEach(d=>d.items.forEach(it=>{
+    const v = state.answers[it[0]] || 0;
+    rows.push([it[0], d.name, it[1], v > 0 ? v : '', v === -1 ? '是' : '', it[2]]);
+  }));
+  rows.push([]);
+  rows.push(['一级维度','子能力数','当前均分P','重要程度I','趋势','策略']);
+  DIMS.forEach(d=>{
+    const s = dimStats(d), m = dimMeta(d.id);
+    rows.push([d.name, d.items.length, s.avg ? s.avg.toFixed(2) : '', m.i || '', m.trend ? TREND[m.trend] : '', strategy(s.avg, m.i).label]);
+  });
+  rows.push([]);
+  rows.push(['补充能力','评分','检查问题']);
+  EXTRAS.forEach(it=>{
+    const v = state.extra[it[0]] || 0;
+    rows.push([it[1], v > 0 ? v : (v === -1 ? '未验证' : ''), it[2]]);
+  });
+  rows.push([]);
+  rows.push(['总结项目','内容']);
+  const labels = {s1:'最强维度①',s2:'最强维度②',s3:'最强维度③',w1:'最需补足①',w2:'最需补足②',w3:'最需补足③',
+    advantage:'最值得长期投入的优势',blind:'最容易忽视的短板',exp:'最缺乏的现实经历',longterm:'最需要建立的长期能力',
+    g1:'一年目标①',g2:'一年目标②',g3:'一年目标③'};
+  Object.keys(labels).forEach(k=> rows.push([labels[k], state.summary[k] || '']));
+  const csv = rows.map(r=>r.map(c=>{
+    const s = String(c == null ? '' : c);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+  }).join(',')).join('\r\n');
+  download(`能力评估-${stamp()}.csv`, '\uFEFF' + csv, 'text/csv;charset=utf-8');
+  toast('CSV 已导出（可用 Excel 打开）');
+}
+
+/* =========================================================
+   事件
+   ========================================================= */
+function bind(){
+  document.addEventListener('click', e=>{
+    const chip = e.target.closest('.chip');
+    if(chip){
+      const v = Number(chip.dataset.v);
+      if(chip.dataset.code){
+        const code = chip.dataset.code;
+        state.answers[code] = state.answers[code] === v ? 0 : v;
+        const row = chip.closest('.rate');
+        $$('.chip', row).forEach(c=> c.classList.toggle('on', Number(c.dataset.v) === state.answers[code]));
+        const dimId = code.split('.')[0];
+        refreshDim(dimId);
+        updateGlobal(); saveState();
+      }else if(chip.dataset.ex){
+        const code = chip.dataset.ex;
+        state.extra[code] = state.extra[code] === v ? 0 : v;
+        const row = chip.closest('.rate');
+        $$('.chip', row).forEach(c=> c.classList.toggle('on', Number(c.dataset.v) === state.extra[code]));
+        saveState();
+      }
+      return;
+    }
+
+    const why = e.target.closest('.info');
+    if(why){
+      const id = why.dataset.why;
+      const d = DEFAULT_I[id];
+      toast(`推荐重要度 ${d.v} 分：${d.why}`);
+      return;
+    }
+
+    const seg = e.target.closest('.seg button');
+    if(seg){
+      const id = seg.dataset.dim, kind = seg.dataset.kind, val = seg.dataset.val;
+      const m = state.dimMeta[id] || {};
+      if(kind === 'i'){
+        const nv = Number(val);
+        m.i = m.i === nv ? 0 : nv;
+      }else{
+        m.trend = m.trend === val ? '' : val;
+      }
+      state.dimMeta[id] = m;
+      refreshDim(id); saveState();
+      return;
+    }
+
+    const jump = e.target.closest('[data-jump]');
+    if(jump){
+      $('#sidebar').classList.remove('open');
+    }
+
+    if(e.target.closest('#tabs button')){
+      switchView(e.target.closest('#tabs button').dataset.view);
+      return;
+    }
+    if(e.target.closest('#btnMenu')){
+      $('#sidebar').classList.toggle('open');
+      return;
+    }
+    if(e.target.closest('#btnData')){
+      $('#menuData').hidden = !$('#menuData').hidden;
+      return;
+    }
+    if(!e.target.closest('.menu-wrap')) $('#menuData').hidden = true;
+
+    if(e.target.closest('#btnExportJSON')) { $('#menuData').hidden = true; exportJSON(false); }
+    if(e.target.closest('#btnExportJSONNoCode')) { $('#menuData').hidden = true; exportJSON(true); }
+    if(e.target.closest('#btnCopyText')) { $('#menuData').hidden = true; copyReport(); }
+    if(e.target.closest('#btnExportCSV')) { $('#menuData').hidden = true; exportCSV(); }
+    if(e.target.closest('#btnImport')) { $('#menuData').hidden = true; $('#fileInput').click(); }
+    if(e.target.closest('#btnPrint')) { $('#menuData').hidden = true; setTimeout(()=>window.print(), 120); }
+    if(e.target.closest('#btnReset')){
+      $('#menuData').hidden = true;
+      if(confirm('确定要清空全部评分与填写内容吗？该操作不可撤销，建议先导出 JSON 备份。')){
+        state = {answers:{}, dimMeta:{}, extra:{}, summary:{}, plan:{}, seeded:false, updatedAt:null};
+        seedDefaults(true);
+        try{ localStorage.removeItem(KEY); }catch(err){}
+        renderDims(); renderExtras(); renderSideNav(); updateGlobal();
+        switchView('assess');
+        toast('已清空');
+      }
+      return;
+    }
+
+    if(e.target.closest('#btnResume')){
+      const d = DIMS.find(x=>{ const s = dimStats(x); return s.rated + s.unv < s.total; });
+      if(d){
+        const el = document.getElementById('dim-' + d.id);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+        toast('继续第 ' + d.id + ' 个维度：' + d.name);
+      }else{
+        toast('17 个维度都已完成，去「总表」看看结果吧');
+      }
+      return;
+    }
+
+    if(e.target.closest('#btnResetI')){
+      seedDefaults(true);
+      renderDims(); saveState();
+      toast('重要程度已恢复为推荐值');
+      return;
+    }
+
+    if(e.target.closest('#btnAutoFill')){
+      const rows = dimRows().filter(r=>r.avg>0);
+      if(!rows.length){ toast('先完成一些评分吧'); return; }
+      const best = rows.slice().sort((a,b)=> b.avg - a.avg || b.i - a.i).slice(0,3);
+      const worst = rows.filter(r=>r.i>=3).slice().sort((a,b)=> a.avg - b.avg || b.i - a.i).slice(0,3);
+      state.summary.s1 = best[0] ? best[0].d.name : '';
+      state.summary.s2 = best[1] ? best[1].d.name : '';
+      state.summary.s3 = best[2] ? best[2].d.name : '';
+      state.summary.w1 = worst[0] ? worst[0].d.name : '';
+      state.summary.w2 = worst[1] ? worst[1].d.name : '';
+      state.summary.w3 = worst[2] ? worst[2].d.name : '';
+      if(best[0]) state.summary.advantage = state.summary.advantage || best[0].d.name + '（可作为差异化优势培养）';
+      if(worst[0]) state.summary.longterm = state.summary.longterm || worst[0].d.name;
+      renderSummary(); saveState();
+      toast('已按评分填入候选，可自行修改');
+      return;
+    }
+    if(e.target.closest('#btnClearSummary')){
+      ['s1','s2','s3','w1','w2','w3','advantage','blind','exp','longterm','g1','g2','g3'].forEach(k=> state.summary[k] = '');
+      renderSummary(); saveState();
+      return;
+    }
+  });
+
+  // 表头排序
+  $('#profileBody').closest('table').addEventListener('click', e=>{
+    const th = e.target.closest('th[data-sort]');
+    if(!th) return;
+    const k = th.dataset.sort;
+    if(profileSort.key === k) profileSort.dir *= -1;
+    else { profileSort.key = k; profileSort.dir = k === 'name' ? 1 : -1; }
+    renderProfile();
+  });
+
+  // 输入类
+  document.addEventListener('input', e=>{
+    const t = e.target;
+    if(t.dataset && t.dataset.sum !== undefined){
+      state.summary[t.dataset.sum] = t.value; saveState();
+    }
+    if(t.dataset && t.dataset.plan !== undefined){
+      state.plan[t.dataset.plan] = t.value; saveState();
+    }
+  });
+  document.addEventListener('change', e=>{
+    const t = e.target;
+    if(t.dataset && t.dataset.planSel){
+      state.plan[t.dataset.planSel] = t.value; saveState();
+    }
+  });
+
+  // 导入
+  $('#fileInput').addEventListener('change', e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const o = JSON.parse(reader.result);
+        const src = o.raw || o;   // 兼容新版（数据在 raw 里）与旧版备份
+        if(!src.answers){
+          toast('这个文件不含可还原的数据（可能是「不含编号」的分析版），请改用「导出 JSON（含能力名称）」的备份文件');
+          return;
+        }
+        state.answers = src.answers || {};
+        state.dimMeta = src.dimMeta || {};
+        state.extra = src.extra || {};
+        state.summary = src.summary || {};
+        state.plan = src.plan || {};
+        state.seeded = false;
+        seedDefaults(false);   // 保留文件里的重要程度，只补全缺失项
+        saveState();
+        renderDims(); renderExtras(); renderSideNav(); updateGlobal();
+        if(currentView !== 'assess') switchView(currentView);
+        toast('导入成功');
+      }catch(err){
+        toast('文件格式不正确');
+      }
+    };
+    reader.readAsText(f);
+    e.target.value = '';
+  });
+
+  // 锚点跳转
+  document.addEventListener('click', e=>{
+    const a = e.target.closest('a.side-item');
+    if(!a) return;
+    e.preventDefault();
+    const target = document.getElementById('dim-' + a.dataset.jump);
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  window.addEventListener('beforeunload', ()=>{
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  });
+}
+
+/* =========================================================
+   启动
+   ========================================================= */
+loadState();
+renderDims();
+renderExtras();
+renderSideNav();
+bind();
+updateGlobal();
+</script>
+</body>
+</html>
